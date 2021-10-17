@@ -36,7 +36,7 @@ class ShouldReview {
       if (firstLaunchDate.isAfter(now)) return false;
 
       if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
-        firstLaunchDate.add(Duration(days: minDays));
+        firstLaunchDate = firstLaunchDate.add(Duration(days: minDays));
         if (firstLaunchDate.difference(now).inDays % coolDownDays != 0) {
           return false;
         }
@@ -52,7 +52,7 @@ class ShouldReview {
       // Launch times criteria
       int timesLaunched = prefs.getInt(prefTimesLaunched) ?? 1;
       if (prefs.getBool(prefInTimesLaunchedCoolDownMode) ?? false) {
-        timesLaunched - minLaunchTimes;
+        timesLaunched -= minLaunchTimes;
         if (timesLaunched <= 0) return false;
         if (timesLaunched % coolDownLaunchTimes != 0) {
           return false;
@@ -122,4 +122,5 @@ class ShouldReview {
   }
 }
 
+/// Should Review calculation criteria
 enum Criteria { timesLaunched, days }
