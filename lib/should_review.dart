@@ -80,7 +80,7 @@ class ShouldReview {
   /// Increments the number of times the app was launched.
   static Future<void> recordLaunch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt(prefTimesLaunched, (prefs.getInt(prefTimesLaunched) ?? 0) + 1);
+    await prefs.setInt(prefTimesLaunched, (prefs.getInt(prefTimesLaunched) ?? 0) + 1);
     _syncFirstLaunchDate(prefs);
   }
 
@@ -117,7 +117,7 @@ class ShouldReview {
     }
     DateTime lastReturnedTrue =
         DateTime.parse(prefs.getString(prefLastReturnedTrue)!);
-    return lastReturnedTrue.difference(DateTimeExtension.now()).inDays == 0;
+    return DateTimeExtension.now().difference(lastReturnedTrue).inDays == 0;
   }
 
   /// Record the last time we returned true.

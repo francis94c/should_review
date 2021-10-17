@@ -12,4 +12,9 @@ extension ShouldReviewExtension on ShouldReview {
     await prefs.remove(prefInDaysCoolDownMode);
     await prefs.remove(prefInTimesLaunchedCoolDownMode);
   }
+
+  static Future<void> resetReturnedTrueTodayFlag() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(prefLastReturnedTrue);
+  }
 }
