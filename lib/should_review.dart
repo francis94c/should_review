@@ -2,6 +2,7 @@ library should_review;
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:should_review/config/pref_keys.dart';
+import 'package:should_review/extensions/date_time.dart';
 
 /// Should Review Class.
 class ShouldReview {
@@ -29,12 +30,12 @@ class ShouldReview {
     if (criteria == Criteria.days) {
       DateTime firstLaunchDate =
           DateTime.parse(prefs.getString(prefFirstLaunchDate)!);
-      DateTime now = DateTime.now();
+      DateTime now = DateTimeExtension.now();
 
       // Irregular condition.
       if (firstLaunchDate.isAfter(now)) return false;
 
-      if (prefs.getBool(prefInCoolDownMode) ?? false) {
+      if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
         firstLaunchDate.add(Duration(days: minDays));
         if (firstLaunchDate.difference(now).inDays % coolDownDays != 0) {
           return false;
@@ -44,12 +45,26 @@ class ShouldReview {
           return false;
         } else {
           // We are past the min days. Enter cool down mode.
-          await prefs.setBool(prefInCoolDownMode, true);
+          _enterCoolDownMode(prefs, Criteria.days);
         }
       }
     } else {
       // Launch times criteria
-      if (prefs.getBool(prefInCoolDownMode) ?? false) {}
+      int timesLaunched = prefs.getInt(prefTimesLaunched) ?? 1;
+      if (prefs.getBool(prefInTimesLaunchedCoolDownMode) ?? false) {
+        timesLaunched - minLaunchTimes;
+        if (timesLaunched <= 0) return false;
+        if (timesLaunched % coolDownLaunchTimes != 0) {
+          return false;
+        }
+      } else {
+        if (timesLaunched < minLaunchTimes) {
+          return false;
+        } else {
+          // We are past the min launch times. Enter cool down mode.
+          _enterCoolDownMode(prefs, Criteria.timesLaunched);
+        }
+      }
     }
 
     if (!_hasReturnedTrueToday(prefs)) {
@@ -67,6 +82,16 @@ class ShouldReview {
     _syncFirstLaunchDate(prefs);
   }
 
+  static Future<void> _enterCoolDownMode(
+      SharedPreferences prefs, Criteria criteria) async {
+    if (criteria == Criteria.days) {
+      await prefs.setBool(prefInDaysCoolDownMode, true);
+    } else {
+      // Times launched criteria.
+      await prefs.setBool(prefInTimesLaunchedCoolDownMode, true);
+    }
+  }
+
   // Set shouldReview() to never return true again. this is useful when a user has replied your prompt with 'Never'.
   static Future<void> neverReview() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -76,20 +101,20 @@ class ShouldReview {
 
   static Future<void> _syncFirstLaunchDate(SharedPreferences prefs) async {
     if (prefs.getString(prefFirstLaunchDate) == null) {
-      prefs.setString(prefFirstLaunchDate, DateTime.now().toString());
+      prefs.setString(prefFirstLaunchDate, DateTimeExtension.now().toString());
     }
   }
 
   static bool _hasReturnedTrueToday(SharedPreferences prefs) {
     DateTime lastReturnedTrue =
         DateTime.parse(prefs.getString(prefLastReturnedTrue)!);
-    return lastReturnedTrue.difference(DateTime.now()).inDays == 0;
+    return lastReturnedTrue.difference(DateTimeExtension.now()).inDays == 0;
   }
 
   static bool _recordLastReturnedTrue(SharedPreferences prefs) {
-    prefs.setString(prefLastReturnedTrue, DateTime.now().toString());
+    prefs.setString(prefLastReturnedTrue, DateTimeExtension.now().toString());
     return true;
   }
 }
 
-enum Criteria { timesOpened, days }
+enum Criteria { timesLaunched, days }
