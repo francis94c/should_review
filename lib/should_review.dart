@@ -82,6 +82,8 @@ class ShouldReview {
     _syncFirstLaunchDate(prefs);
   }
 
+  /// Enter cooldown mode.
+  /// At this point, minDays or minLaunchTimes do not effectively count, but coolDownInterval values.
   static Future<void> _enterCoolDownMode(
       SharedPreferences prefs, Criteria criteria) async {
     if (criteria == Criteria.days) {
@@ -92,25 +94,28 @@ class ShouldReview {
     }
   }
 
-  // Set shouldReview() to never return true again. this is useful when a user has replied your prompt with 'Never'.
+  /// Set shouldReview() to never return true again. this is useful when a user has replied your prompt with 'Never'.
   static Future<void> neverReview() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(prefShouldReview, false);
     _syncFirstLaunchDate(prefs);
   }
 
+  /// Set first launch date if not set.
   static Future<void> _syncFirstLaunchDate(SharedPreferences prefs) async {
     if (prefs.getString(prefFirstLaunchDate) == null) {
       prefs.setString(prefFirstLaunchDate, DateTimeExtension.now().toString());
     }
   }
 
+  /// Check if we have returned true today.
   static bool _hasReturnedTrueToday(SharedPreferences prefs) {
     DateTime lastReturnedTrue =
         DateTime.parse(prefs.getString(prefLastReturnedTrue)!);
     return lastReturnedTrue.difference(DateTimeExtension.now()).inDays == 0;
   }
 
+  /// Record the last time we returned true.
   static bool _recordLastReturnedTrue(SharedPreferences prefs) {
     prefs.setString(prefLastReturnedTrue, DateTimeExtension.now().toString());
     return true;
