@@ -143,4 +143,28 @@ void main() async {
     expect(await ShouldReview.shouldReview(), false);
     expect(await ShouldReview.shouldReview(), false);
   });
+
+  // Never Rate Region
+  test("Always return false no matter what.", () async {
+    // Days Criteria.
+    await ShouldReviewExtension.reset();
+    await ShouldReview.neverReview();
+    expect(await ShouldReview.shouldReview(), false);
+    DateTimeExtension.customTime = DateTime.now();
+    expect(await ShouldReview.shouldReview(), false);
+    DateTimeExtension.customTime = DateTimeExtension.customTime!
+        .add(const Duration(days: 5)); // 5 Days in Future.
+    expect(await ShouldReview.shouldReview(), false);
+
+    // Times Launched Criteria.
+    await ShouldReviewExtension.reset();
+    await ShouldReview.neverReview();
+    await ShouldReview.recordLaunch();
+    await ShouldReview.recordLaunch();
+    await ShouldReview.recordLaunch();
+    await ShouldReview.recordLaunch();
+    await ShouldReview.recordLaunch();
+    expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
+        false);
+  });
 }
