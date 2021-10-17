@@ -33,15 +33,17 @@ class ShouldReview {
       DateTime now = DateTimeExtension.now();
 
       // Irregular condition.
-      if (firstLaunchDate.isAfter(now)) return false;
+      if (firstLaunchDate.isAfter(now)) {
+        return false;
+      }
 
       if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
         firstLaunchDate = firstLaunchDate.add(Duration(days: minDays));
-        if (firstLaunchDate.difference(now).inDays % coolDownDays != 0) {
+        if (now.difference(firstLaunchDate).inDays % coolDownDays != 0) {
           return false;
         }
       } else {
-        if (firstLaunchDate.difference(now).inDays < minDays) {
+        if (now.difference(firstLaunchDate).inDays < minDays) {
           return false;
         } else {
           // We are past the min days. Enter cool down mode.
@@ -110,6 +112,9 @@ class ShouldReview {
 
   /// Check if we have returned true today.
   static bool _hasReturnedTrueToday(SharedPreferences prefs) {
+    if (prefs.getString(prefLastReturnedTrue) == null) {
+      return false;
+    }
     DateTime lastReturnedTrue =
         DateTime.parse(prefs.getString(prefLastReturnedTrue)!);
     return lastReturnedTrue.difference(DateTimeExtension.now()).inDays == 0;
