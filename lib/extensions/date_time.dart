@@ -5,7 +5,11 @@ extension DateTimeExtension on DateTime {
     return _customTime ?? DateTime.now();
   }
 
-  static set customTime(DateTime customTime) {
+  static set customTime(DateTime? customTime) {
     _customTime = customTime;
+  }
+
+  static DateTime? get customTime {
+    return _customTime;
   }
 }
