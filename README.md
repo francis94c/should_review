@@ -26,7 +26,7 @@ You can safely call the determining function `Future<bool> shouldReview()` of th
 
 ## Getting started
 
-Add the below to your `pubspec.yaml` file.'
+Add the below to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
@@ -39,7 +39,7 @@ A good candidate is the [`in_app_review`](https://pub.dev/packages/in_app_review
 
 ## Usage
 
-To determine whether to review based on default parameters, do the following.
+To determine whether to prompt a user for review based on default parameters, do the following.
 
 ```dart
 import 'package:should_review/should_review.dart';
