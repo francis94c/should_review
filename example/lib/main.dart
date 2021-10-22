@@ -212,6 +212,7 @@ class _MyHomePageState extends State<MyHomePage> {
         criteria: Criteria.days,
         minDays: int.parse(_minDaysController.text),
         coolDownDays: int.parse(_coolDownDaysController.text))) {
+      // A good place to use the in_app_review plugin.
       // ignore: avoid_print
       print("Retruned True");
       ScaffoldMessenger.of(context).showSnackBar(
