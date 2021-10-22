@@ -59,3 +59,11 @@ For a practical example, see the package example section.
 Pull requests are welcome. 
 
 For major changes, please open an issue first to discuss what you would like to change.
+
+
+## TODO
+
+- [ ] Determine if user should be prompted for a review based on a custom criteria.
+- [ ] Get next prompt date.
+- [ ] Get number of times launched.
+- [ ] Get number of days since first launch.
