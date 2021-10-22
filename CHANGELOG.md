@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* Ability to determine if a user should rate an app based on days and times launched criteria.
+* Provided an example.
