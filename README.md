@@ -21,24 +21,49 @@ You can safely call the determining function `Future<bool> shouldReview()` of th
 
 ## Features
 
-* Determine if you need to prompt user for review based on number of days since first app launch, number of times launched, or a custom criteria.
+* Determine if you need to prompt user for review based on number of days since first app launch, number of times launched.
+* Determine the above by a custom criteria. (In Progress)
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add the below to your `pubspec.yaml` file.
+
+```yaml
+dependencies:
+    should_review: ^0.0.1
+```
+
+As this package doesn't actually prompt users for a review, you will need a plugin or a native implementation or other means to do that for you.
+
+A good candidate is the [`in_app_review`](https://pub.dev/packages/in_app_review) plugin.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+To determine whether to prompt a user for review based on default parameters, do the following.
 
 ```dart
-const like = 'sample';
+import 'package:should_review/should_review.dart';
+
+if (await ShouldReview.shouldReview()) {
+    // Prompt user for review.
+}
 ```
+
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+For a practical example, see the package example section.
+
+## Contributing
+
+Pull requests are welcome. 
+
+For major changes, please open an issue first to discuss what you would like to change.
+
+
+## TODO
+
+- [ ] Determine if user should be prompted for a review based on a custom criteria.
+- [ ] Get next prompt date.
+- [ ] Get number of times launched.
+- [ ] Get number of days since first launch.

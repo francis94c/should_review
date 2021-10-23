@@ -12,8 +12,8 @@ class ShouldReview {
   static Future<bool> shouldReview(
       {Criteria criteria = Criteria.days,
       int minDays = 5,
+      int coolDownDays = 2,
       int minLaunchTimes = 5,
-      coolDownDays = 2,
       int coolDownLaunchTimes = 4}) async {
     // Get SharedPrefernce Instance.
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -80,7 +80,8 @@ class ShouldReview {
   /// Increments the number of times the app was launched.
   static Future<void> recordLaunch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(prefTimesLaunched, (prefs.getInt(prefTimesLaunched) ?? 0) + 1);
+    await prefs.setInt(
+        prefTimesLaunched, (prefs.getInt(prefTimesLaunched) ?? 0) + 1);
     _syncFirstLaunchDate(prefs);
   }
 
