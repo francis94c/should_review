@@ -1,7 +1,7 @@
 name: should_review
 description: A flutter package to determine if you should prompt users to rate your app based on some set metrics.
 version: 0.0.1
-homepage:
+repository: https://github.com/francis94c/should_review
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
