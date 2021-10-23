@@ -3,6 +3,9 @@ import 'package:should_review/config/pref_keys.dart';
 import 'package:should_review/should_review.dart';
 
 extension ShouldReviewExtension on ShouldReview {
+  /// Resets all flags in the system's shared preferences.
+  /// Basically this is like taking the app in terms of this packag, to the
+  /// state it was when the app was first installed and launched.
   static Future<void> reset() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(prefTimesLaunched);
@@ -13,6 +16,8 @@ extension ShouldReviewExtension on ShouldReview {
     await prefs.remove(prefInTimesLaunchedCoolDownMode);
   }
 
+  /// Resets the flag that indictaes that a true value has been returned by the
+  /// `ShouldReview.shouldReview()` method in the last 24 hours (1 Day).
   static Future<void> resetReturnedTrueTodayFlag() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove(prefLastReturnedTrue);
