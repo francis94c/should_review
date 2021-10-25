@@ -53,6 +53,7 @@ import 'package:should_review/should_review.dart';
 
 if (await ShouldReview.shouldReview()) {
     // Prompt user for review.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never return true again.
 }
 ```
 
@@ -67,15 +68,31 @@ if (await ShouldReview.shouldReview(
     coolDownDays: 2,
     )) {
     // Prompt user for review.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never return true again.
 }
 ```
 
-##### Parameters
+### Using Launch Times Criteria
 
-| Parameter  | Description                                | Example         |
-| ---------- | ------------------------------------------ | --------------- |
-| `criteria` | The criteria to use for determining if you | `Criteria.days` |
-|            | should prompt a user for review.           |                 |
+To determine whether to prompt a user for review based on launch times criteria do the following.
+
+```dart
+import 'package:should_review/should_review.dart';
+
+```
+
+__NB:__ The `shouldReview` function can only return `true` __once__ a day.
+
+### Parameters
+
+| Parameter             | Description                                                                                                                                                                                                                                                 | Example                                   |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
+| `criteria`            | The criteria to use for determining if you should prompt a user for review.                                                                                                                                                                                 | `Criteria.days`, `Criteria.timesLaunched` |
+| `minDays`             | The minimum number of days since first app launch to prompt a user for review.                                                                                                                                                                              | `5`, `8`, `2`                             |
+| `coolDownDays`        | The number of days after the minimum days has elapsed to prompt a user for review. In other words, if you provided `2` to this parameter, it means that every `2` days, the `shouldReview` function will return true if `neverReview` has not been called. | `2`, `3`, `1`                             |
+| `minLaunchTimes`      | The number of times the app has to be launched before the `shouldReview` function can return true.                                                                                                                                                          | `8`, `5`                                  |
+| `coolDownLaunchTimes` | same as `coolDownDays` but for the launch times criteria.                                                                                                                                                                                                   | `3`, `5`                                  |
+
 ## Additional information
 
 For a practical example, see the package example section.
