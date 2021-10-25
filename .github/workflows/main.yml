@@ -14,8 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install Flutter 
-        uses: subosito/flutter-action@v1.3.2
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.0.5'
       - name: Install dependencies 
         run: flutter pub get
       - name: Test Package 
