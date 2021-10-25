@@ -101,6 +101,8 @@ For a practical example, see the package example section.
 
 Pull requests are welcome.
 
+Send pull requests to the `develop` branch.
+
 For major changes, please open an issue first to discuss what you would like to change.
 
 ## TODO
