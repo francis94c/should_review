@@ -71,6 +71,11 @@ if (await ShouldReview.shouldReview(
     ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
 }
 ```
+__NB:__ For the above to work as expected, there is one thing you have to put in place, which is the `recordLaunch` function.
+
+The `recordLaunch` function must be called somewhere in your app that runs once the app is launched. Suitably in your `lib\main.dart` file or in the `initState` of your Dashboard widget for instance.
+
+This enables the package record how many times the app was launched and use it while determining review possibility with the times launched criteria.
 
 ### Using Launch Times Criteria
 
@@ -79,6 +84,14 @@ To determine whether to prompt a user for review based on launch times criteria 
 ```dart
 import 'package:should_review/should_review.dart';
 
+if (await ShouldReview.shouldReview(
+    criteria: Criteria.launchTimes,
+    minLaunchTimes: 8,
+    coolDownLaunchTimes: 4,
+    )) {
+    // Prompt user for review.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
+}
 ```
 
 __NB:__ The `shouldReview` function can only return `true` __once__ a day.
