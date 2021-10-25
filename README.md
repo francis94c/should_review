@@ -1,6 +1,6 @@
 # should_review
 
-[![pub package](https://img.shields.io/pub/v/should_review.svg)](https://pub.dev/packages/should_review) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build](https://github.com/francis94c/should_review/actions/workflows/main.yml/badge.svg)](https://github.com/francis94c/should_review/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/francis94c/should_review/branch/master/graph/badge.svg?token=KCPSZJHEO9)](https://codecov.io/gh/francis94c/should_review) [![pub package](https://img.shields.io/pub/v/should_review.svg)](https://pub.dev/packages/should_review) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This package helps determine if a user should be prompted to rate your app.
 
