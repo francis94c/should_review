@@ -53,7 +53,7 @@ import 'package:should_review/should_review.dart';
 
 if (await ShouldReview.shouldReview()) {
     // Prompt user for review.
-    ShouldReview.neverReview(); // This ensures the shouldReview function never return true again.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
 }
 ```
 
@@ -68,7 +68,7 @@ if (await ShouldReview.shouldReview(
     coolDownDays: 2,
     )) {
     // Prompt user for review.
-    ShouldReview.neverReview(); // This ensures the shouldReview function never return true again.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
 }
 ```
 
