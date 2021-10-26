@@ -156,7 +156,6 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 10,
               ),
-              const Divider(),
               const SizedBox(
                 height: 10,
               ),
@@ -165,6 +164,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 color: Colors.blue,
                 child: const Text(
                   "Reset",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _viewLaunchTimesCriteriaExample,
+                color: Colors.blue,
+                child: const Text(
+                  "View Launch Times Criteria Example",
                   style: TextStyle(color: Colors.white),
                 ),
               )
@@ -225,7 +235,117 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() => _hasPromptedRateApp = true);
     } else {
       // ignore: avoid_print
-      print("Retruned False");
+      print("Returned False");
     }
+  }
+
+  void _viewLaunchTimesCriteriaExample() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const LaunchTimesCriteriaExample()));
+  }
+}
+
+class LaunchTimesCriteriaExample extends StatefulWidget {
+  const LaunchTimesCriteriaExample({Key? key}) : super(key: key);
+
+  @override
+  _LaunchTimesCriteriaExampleState createState() =>
+      _LaunchTimesCriteriaExampleState();
+}
+
+class _LaunchTimesCriteriaExampleState
+    extends State<LaunchTimesCriteriaExample> {
+  // TextEditing Controllers.
+  final TextEditingController _minLaunchTimesController =
+      TextEditingController();
+  final TextEditingController _coolDownLaunchTimescontroller =
+      TextEditingController();
+
+  // Keys
+  final GlobalKey<FormState> _launchTimesCriteriaFormKey = GlobalKey();
+
+  bool _hasPromptedRateApp = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _reset();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Launch Times Criteria Example"),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        child: Form(
+          key: _launchTimesCriteriaFormKey,
+          child: Column(
+            children: [
+              const Text(
+                  "Determine if user should rate app by past days after first launch"),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _minLaunchTimesController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text('Minimum app launch times'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _coolDownLaunchTimescontroller,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text(
+                              'Launch times in interval after minimum app launch times have been met'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _reset() async {
+    await ShouldReviewExtension.reset();
+    setState(() {
+      _hasPromptedRateApp = false;
+    });
   }
 }
