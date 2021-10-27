@@ -70,18 +70,23 @@ void main() async {
   test('Return true after 4 launches', () async {
     await ShouldReviewExtension.reset();
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 1);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 2);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 3);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 4);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 5);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         true);
   });
@@ -89,33 +94,42 @@ void main() async {
   test('Verify cooldown behaviour with times launched criteria', () async {
     await ShouldReviewExtension.reset();
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 1);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 2);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 3);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 4);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 5);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         true);
     // Cool Down Mode.
     // Coool down launch times = 4
     ShouldReviewExtension.resetReturnedTrueTodayFlag();
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 6);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 7);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 8);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 9);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         true);
   });
@@ -125,18 +139,23 @@ void main() async {
       () async {
     await ShouldReviewExtension.reset();
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 1);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 2);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 3);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 4);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 5);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         true);
     expect(await ShouldReview.shouldReview(), false);
@@ -157,6 +176,7 @@ void main() async {
     expect(await ShouldReview.shouldReview(), false);
 
     // Times Launched Criteria.
+    // Defaulr Min Launch Times is 5.
     await ShouldReviewExtension.reset();
     await ShouldReview.neverReview();
     await ShouldReview.recordLaunch();
@@ -164,6 +184,7 @@ void main() async {
     await ShouldReview.recordLaunch();
     await ShouldReview.recordLaunch();
     await ShouldReview.recordLaunch();
+    expect(await ShouldReview.getTimesAppLaunched(), 5);
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
   });
