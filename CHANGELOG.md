@@ -7,3 +7,4 @@
 
 * More documentation.
 * More elaborate examples.
+* Get number of times app was launched or the number of times `recordLaunch` was called.
