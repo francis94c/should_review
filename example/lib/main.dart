@@ -222,6 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: Duration(seconds: 10),
         ),
       );
+      // Call `ShouldReview.neverReview();` to ensure the shouldReview function never returns true again.
       setState(() => _hasPromptedRateApp = true);
     } else {
       // ignore: avoid_print
