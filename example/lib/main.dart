@@ -259,18 +259,19 @@ class _LaunchTimesCriteriaExampleState
   // TextEditing Controllers.
   final TextEditingController _minLaunchTimesController =
       TextEditingController();
-  final TextEditingController _coolDownLaunchTimescontroller =
+  final TextEditingController _coolDownLaunchTimesController =
       TextEditingController();
 
   // Keys
   final GlobalKey<FormState> _launchTimesCriteriaFormKey = GlobalKey();
 
   bool _hasPromptedRateApp = false;
+  int _timesAppLaunched = 0;
 
   @override
   void initState() {
     super.initState();
-    _reset();
+    _reset().then((_) => _updateAppLaunchTimesInUI());
   }
 
   @override
@@ -313,9 +314,12 @@ class _LaunchTimesCriteriaExampleState
                           border: OutlineInputBorder(borderSide: BorderSide())),
                     ),
                   ),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   Expanded(
                     child: TextFormField(
-                      controller: _coolDownLaunchTimescontroller,
+                      controller: _coolDownLaunchTimesController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(RegExp("[0-9]")),
@@ -336,6 +340,53 @@ class _LaunchTimesCriteriaExampleState
                   ),
                 ],
               ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Has Prompted user to Rate App: " +
+                    (_hasPromptedRateApp ? "True" : "False"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "App Launch Times: $_timesAppLaunched",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _recordLaunch,
+                color: Colors.blue,
+                child: const Text(
+                  "Record App Launch",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _testShouldRateByLaunchTimesCriteria,
+                color: Colors.blue,
+                child: const Text(
+                  "Test",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: () =>
+                    _reset().then((_) => _updateAppLaunchTimesInUI()),
+                color: Colors.blue,
+                child: const Text(
+                  "Reset",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ],
           ),
         ),
@@ -343,10 +394,54 @@ class _LaunchTimesCriteriaExampleState
     );
   }
 
-  void _reset() async {
+  Future<void> _reset() async {
     await ShouldReviewExtension.reset();
     setState(() {
       _hasPromptedRateApp = false;
     });
+  }
+
+  /// Record App Launch.
+  void _recordLaunch() async {
+    await ShouldReview.recordLaunch();
+    _updateAppLaunchTimesInUI();
+  }
+
+  /// Upate App Launch Times in UI.
+  void _updateAppLaunchTimesInUI() {
+    ShouldReview.getTimesAppLaunched().then(
+        (int launchTimes) => setState(() => _timesAppLaunched = launchTimes));
+  }
+
+  void _testShouldRateByLaunchTimesCriteria() async {
+    // Validate Form Field.
+    if (!_launchTimesCriteriaFormKey.currentState!.validate()) {
+      return;
+    }
+
+    // ignore: avoid_print
+    print("Checking Prompt Review Possibility");
+
+    // Should Review.
+    if (await ShouldReview.shouldReview(
+        criteria: Criteria.timesLaunched,
+        minLaunchTimes: int.parse(_minLaunchTimesController.text),
+        coolDownLaunchTimes: int.parse(_coolDownLaunchTimesController.text))) {
+      // A good place to use the in_app_review plugin.
+      // ignore: avoid_print
+      print("Retruned True");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "User has been shown a hypotetical review dialog, this logic will now return true only on the cool down launch times interval."),
+          duration: Duration(seconds: 10),
+        ),
+      );
+      // Call `ShouldReview.neverReview();` to ensure the shouldReview function never returns true again.
+      setState(() => _hasPromptedRateApp = true);
+    } else {
+      // ignore: avoid_print
+      print("Returned False");
+    }
   }
 }

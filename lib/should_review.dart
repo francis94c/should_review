@@ -85,6 +85,12 @@ class ShouldReview {
     _syncFirstLaunchDate(prefs);
   }
 
+  /// Get number of times app was launched i.e recordLaunch() was called.
+  static Future<int> getTimesAppLaunched() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(prefTimesLaunched) ?? 0;
+  }
+
   /// Enter cooldown mode.
   /// At this point, minDays or minLaunchTimes do not effectively count, but coolDownInterval values.
   static Future<void> _enterCoolDownMode(
