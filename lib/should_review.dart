@@ -9,12 +9,16 @@ class ShouldReview {
   ShouldReview._();
 
   /// Determine if you should prompt the user to review your app.
+  /// [criteria] - Criteria by which to check shouldReview.
   static Future<bool> shouldReview(
       {Criteria criteria = Criteria.days,
       int minDays = 5,
       int coolDownDays = 2,
       int minLaunchTimes = 5,
-      int coolDownLaunchTimes = 4}) async {
+      int coolDownLaunchTimes = 4,
+      String? customCriteriaKey,
+      int? minCustomCriteriaValue,
+      int? coolDownCustomCriteriaInterval}) async {
     // Get SharedPrefernce Instance.
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -24,49 +28,78 @@ class ShouldReview {
     }
 
     await _syncFirstLaunchDate(prefs);
-
-    // The goal here is to see all condition we can returen false and do that.
+    // The goal here is to see all conditions we can return false and do that.
     // If execution get s to the tail of this function then we should probably be returning true.
-    if (criteria == Criteria.days) {
-      DateTime firstLaunchDate =
-          DateTime.parse(prefs.getString(prefFirstLaunchDate)!);
-      DateTime now = DateTimeExtension.now();
+    switch (criteria) {
+      case Criteria.days:
+        // Days Criteria.
+        DateTime firstLaunchDate =
+            DateTime.parse(prefs.getString(prefFirstLaunchDate)!);
+        DateTime now = DateTimeExtension.now();
 
-      // Irregular condition.
-      if (firstLaunchDate.isAfter(now)) {
-        return false;
-      }
+        // Irregular condition.
+        if (firstLaunchDate.isAfter(now)) {
+          return false;
+        }
 
-      if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
-        firstLaunchDate = firstLaunchDate.add(Duration(days: minDays));
-        if (now.difference(firstLaunchDate).inDays % coolDownDays != 0) {
-          return false;
-        }
-      } else {
-        if (now.difference(firstLaunchDate).inDays < minDays) {
-          return false;
+        if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
+          firstLaunchDate = firstLaunchDate.add(Duration(days: minDays));
+          if (now.difference(firstLaunchDate).inDays % coolDownDays != 0) {
+            return false;
+          }
         } else {
-          // We are past the min days. Enter cool down mode.
-          _enterCoolDownMode(prefs, Criteria.days);
+          if (now.difference(firstLaunchDate).inDays < minDays) {
+            return false;
+          } else {
+            // We are past the min days. Enter cool down mode.
+            _enterCoolDownMode(prefs, Criteria.days);
+          }
         }
-      }
-    } else {
-      // Launch times criteria
-      int timesLaunched = prefs.getInt(prefTimesLaunched) ?? 1;
-      if (prefs.getBool(prefInTimesLaunchedCoolDownMode) ?? false) {
-        timesLaunched -= minLaunchTimes;
-        if (timesLaunched <= 0) return false;
-        if (timesLaunched % coolDownLaunchTimes != 0) {
-          return false;
-        }
-      } else {
-        if (timesLaunched < minLaunchTimes) {
-          return false;
+        break;
+      case Criteria.timesLaunched:
+        // Times Launched Criteria.
+        int timesLaunched = prefs.getInt(prefTimesLaunched) ?? 1;
+        if (prefs.getBool(prefInTimesLaunchedCoolDownMode) ?? false) {
+          timesLaunched -= minLaunchTimes;
+          if (timesLaunched <= 0) return false;
+          if (timesLaunched % coolDownLaunchTimes != 0) {
+            return false;
+          }
         } else {
-          // We are past the min launch times. Enter cool down mode.
-          _enterCoolDownMode(prefs, Criteria.timesLaunched);
+          if (timesLaunched < minLaunchTimes) {
+            return false;
+          } else {
+            // We are past the min launch times. Enter cool down mode.
+            _enterCoolDownMode(prefs, Criteria.timesLaunched);
+          }
         }
-      }
+        break;
+      case Criteria.custom:
+        // Custom criteria.
+        if (customCriteriaKey == null ||
+            minCustomCriteriaValue == null ||
+            coolDownCustomCriteriaInterval == null) {
+          throw ArgumentError(
+              'Custom Criteria requires customCriteriaKey, minCustomCriteriaValue and coolDownCustomCriteriaInterval to be set.');
+        }
+
+        int customCriteriaValue =
+            prefs.getInt(prefCustomCriteriaPrefix + customCriteriaKey) ?? 0;
+        if (prefs.getBool(prefInCustomCoolDownModePrefix + customCriteriaKey) ??
+            false) {
+          customCriteriaValue -= minCustomCriteriaValue;
+          if (customCriteriaValue <= 0) return false;
+          if (customCriteriaValue % coolDownCustomCriteriaInterval != 0) {
+            return false;
+          }
+        } else {
+          if (customCriteriaValue < minCustomCriteriaValue) {
+            return false;
+          } else {
+            // We are past the min launch times. Enter cool down mode.
+            _enterCoolDownMode(prefs, Criteria.custom, key: customCriteriaKey);
+          }
+        }
     }
 
     if (!_hasReturnedTrueToday(prefs)) {
@@ -94,12 +127,21 @@ class ShouldReview {
   /// Enter cooldown mode.
   /// At this point, minDays or minLaunchTimes do not effectively count, but coolDownInterval values.
   static Future<void> _enterCoolDownMode(
-      SharedPreferences prefs, Criteria criteria) async {
-    if (criteria == Criteria.days) {
-      await prefs.setBool(prefInDaysCoolDownMode, true);
-    } else {
-      // Times launched criteria.
-      await prefs.setBool(prefInTimesLaunchedCoolDownMode, true);
+      SharedPreferences prefs, Criteria criteria,
+      {String? key}) async {
+    switch (criteria) {
+      case Criteria.days:
+        // Days criteria.
+        await prefs.setBool(prefInDaysCoolDownMode, true);
+        break;
+      case Criteria.timesLaunched:
+        // Times launched criteria.
+        await prefs.setBool(prefInTimesLaunchedCoolDownMode, true);
+        break;
+      case Criteria.custom:
+        // Custom criteria.
+        await prefs.setBool(prefInCustomCoolDownModePrefix + key!, true);
+        break;
     }
   }
 
@@ -107,6 +149,13 @@ class ShouldReview {
   static Future<void> neverReview() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(prefShouldReview, false);
+    _syncFirstLaunchDate(prefs);
+  }
+
+  static Future<void> incrementCustomCriteria(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(prefCustomCriteriaPrefix + key,
+        (prefs.getInt(prefCustomCriteriaPrefix + key) ?? 0) + 1);
     _syncFirstLaunchDate(prefs);
   }
 
@@ -135,4 +184,9 @@ class ShouldReview {
 }
 
 /// Should Review calculation criteria
-enum Criteria { timesLaunched, days }
+/// [timesLaunched] - Check shouldReview based on how many times app launch was
+/// recorded.
+/// [days] - Check shouldReview based on how many days have passed since first
+/// launch.
+/// [custom] - Check shouldReview based on a custom criteria.
+enum Criteria { timesLaunched, days, custom }

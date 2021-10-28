@@ -109,7 +109,8 @@ For major changes, please open an issue first to discuss what you would like to 
 
 ## TODO
 
-- [ ] Determine if user should be prompted for a review based on a custom criteria.
+- [x] Determine if user should be prompted for a review based on a custom criteria.
+- [ ]  
 - [ ] Get next prompt date.
 - [x] Get number of times app launched.
 - [ ] Get number of days since first launch.
