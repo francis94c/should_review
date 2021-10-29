@@ -118,14 +118,30 @@ class ShouldReview {
     _syncFirstLaunchDate(prefs);
   }
 
+  /// Increments the number of times a custom criteria was met.
+  static Future<void> recordCustomCriteriaMet(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(prefCustomCriteriaPrefix + key,
+        (prefs.getInt(prefCustomCriteriaPrefix + key) ?? 0) + 1);
+    _syncFirstLaunchDate(prefs);
+  }
+
   /// Get number of times app was launched i.e recordLaunch() was called.
   static Future<int> getTimesAppLaunched() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getInt(prefTimesLaunched) ?? 0;
   }
 
+  /// Get number of times custom criteria was met i.e .how manu times
+  /// recordCustomCriteriaMet() was called for a custom criteria.
+  static Future<int> getTimesCustomCriteriaWasMet(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(prefCustomCriteriaPrefix + key) ?? 0;
+  }
+
   /// Enter cooldown mode.
-  /// At this point, minDays or minLaunchTimes do not effectively count, but coolDownInterval values.
+  /// At this point, minDays or minLaunchTimes do not effectively count, but
+  /// coolDownInterval values.
   static Future<void> _enterCoolDownMode(
       SharedPreferences prefs, Criteria criteria,
       {String? key}) async {

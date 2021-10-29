@@ -188,4 +188,53 @@ void main() async {
     expect(await ShouldReview.shouldReview(criteria: Criteria.timesLaunched),
         false);
   });
+
+  test("Test Custom Criteria", () async {
+    await ShouldReviewExtension.reset(customCriteriaKeys: ["test"]);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 1);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 2);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 3);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 4);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 5);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        true);
+  });
 }
