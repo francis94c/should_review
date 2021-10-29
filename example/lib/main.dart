@@ -471,8 +471,133 @@ class CustomCriteriaExample extends StatefulWidget {
 }
 
 class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
+  GlobalKey<FormState> _customCriteriaFormKey = GlobalKey();
+
+  final TextEditingController _minCustomCriteriaValueController =
+      TextEditingController();
+  final TextEditingController _coolDownCustomCriteriaIntervalValueController =
+      TextEditingController();
+
+  bool _hasPromptedRateApp = false;
+  int _timesCutsomCriteriaWasMet = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Custom Criteria Example"),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        child: Form(
+          key: _customCriteriaFormKey,
+          child: Column(
+            children: [
+              const Text(
+                  "Determine if user should rate app by a custom criterion"),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _minCustomCriteriaValueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text('Minimum custom criteria value'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller:
+                          _coolDownCustomCriteriaIntervalValueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text('Custom criteria interval value'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Has Prompted user to Rate App: " +
+                    (_hasPromptedRateApp ? "True" : "False"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "App Launch Times: $_timesCutsomCriteriaWasMet",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _recordLaunch,
+                color: Colors.blue,
+                child: const Text(
+                  "Record App Launch",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _testShouldRateByLaunchTimesCriteria,
+                color: Colors.blue,
+                child: const Text(
+                  "Test",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: () =>
+                    _reset().then((_) => _updateAppLaunchTimesInUI()),
+                color: Colors.blue,
+                child: const Text(
+                  "Reset",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
