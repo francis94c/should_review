@@ -28,3 +28,10 @@ const String prefFirstLaunchDate = "${_keyPrefix}first_launch_date";
 /// Preference key to store the last date true was returned from the
 /// shouldReview function.
 const String prefLastReturnedTrue = "${_keyPrefix}last_returned_true";
+
+/// Prefix for custom criteria key values.
+const String prefCustomCriteriaPrefix = "${_keyPrefix}_custom_criteria_";
+
+/// Prefix for custom criteria cool down mode flag.
+const String prefInCustomCoolDownModePrefix =
+    "${prefCustomCriteriaPrefix}_cool_down_";
