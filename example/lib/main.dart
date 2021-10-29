@@ -477,9 +477,20 @@ class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
       TextEditingController();
   final TextEditingController _coolDownCustomCriteriaIntervalValueController =
       TextEditingController();
+  final TextEditingController _customCriteriaKeyController =
+      TextEditingController();
 
   bool _hasPromptedRateApp = false;
   int _timesCutsomCriteriaWasMet = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _reset().then((_) => _updateTimesCustomCriteriaWasMetInUI());
+    _customCriteriaKeyController.text = 'made_purchase';
+    _minCustomCriteriaValueController.text = '4';
+    _coolDownCustomCriteriaIntervalValueController.text = '2';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -550,6 +561,25 @@ class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
               const SizedBox(
                 height: 10,
               ),
+              TextFormField(
+                controller: _customCriteriaKeyController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a valid key';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                    label: Text('Custom criteria key'),
+                    border: OutlineInputBorder(borderSide: BorderSide())),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
               Text(
                 "Has Prompted user to Rate App: " +
                     (_hasPromptedRateApp ? "True" : "False"),
@@ -558,16 +588,16 @@ class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
                 height: 10,
               ),
               Text(
-                "App Launch Times: $_timesCutsomCriteriaWasMet",
+                "Times custom criteria was met: $_timesCutsomCriteriaWasMet",
               ),
               const SizedBox(
                 height: 10,
               ),
               MaterialButton(
-                onPressed: _recordLaunch,
+                onPressed: _recordCustomCriteriaFailed,
                 color: Colors.blue,
                 child: const Text(
-                  "Record App Launch",
+                  "Record Custom Criteria Met",
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -586,8 +616,8 @@ class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
                 height: 10,
               ),
               MaterialButton(
-                onPressed: () =>
-                    _reset().then((_) => _updateAppLaunchTimesInUI()),
+                onPressed: () => _reset()
+                    .then((_) => _updateTimesCustomCriteriaWasMetInUI()),
                 color: Colors.blue,
                 child: const Text(
                   "Reset",
@@ -599,5 +629,68 @@ class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
         ),
       ),
     );
+  }
+
+  /// Record Custom Criteria Met.
+  void _recordCustomCriteriaFailed() async {
+    // Validate Form Field.
+    if (!_customCriteriaFormKey.currentState!.validate()) {
+      return;
+    }
+
+    await ShouldReview.recordCustomCriteriaMet(
+        _customCriteriaKeyController.text);
+    _updateTimesCustomCriteriaWasMetInUI();
+  }
+
+  /// Upate times custom criteria was met in UI.
+  void _updateTimesCustomCriteriaWasMetInUI() {
+    ShouldReview.getTimesCustomCriteriaWasMet(_customCriteriaKeyController.text)
+        .then(
+            (int times) => setState(() => _timesCutsomCriteriaWasMet = times));
+  }
+
+  /// Reset flags.
+  Future<void> _reset() async {
+    await ShouldReviewExtension.reset(
+        customCriteriaKeys: [_customCriteriaKeyController.text]);
+    setState(() {
+      _hasPromptedRateApp = false;
+    });
+  }
+
+  void _testShouldRateByLaunchTimesCriteria() async {
+    // Validate Form Field.
+    if (!_customCriteriaFormKey.currentState!.validate()) {
+      return;
+    }
+
+    // ignore: avoid_print
+    print("Checking Prompt Review Possibility");
+
+    // Should Review.
+    if (await ShouldReview.shouldReview(
+        criteria: Criteria.custom,
+        customCriteriaKey: _customCriteriaKeyController.text,
+        minCustomCriteriaValue:
+            int.parse(_minCustomCriteriaValueController.text),
+        coolDownCustomCriteriaInterval:
+            int.parse(_coolDownCustomCriteriaIntervalValueController.text))) {
+      // A good place to use the in_app_review plugin.
+      // ignore: avoid_print
+      print("Retruned True");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "User has been shown a hypotetical review dialog, this logic will now return true only on the cool down launch times interval."),
+          duration: Duration(seconds: 10),
+        ),
+      );
+      // Call `ShouldReview.neverReview();` to ensure the shouldReview function never returns true again.
+      setState(() => _hasPromptedRateApp = true);
+    } else {
+      // ignore: avoid_print
+      print("Returned False");
+    }
   }
 }
