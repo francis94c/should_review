@@ -191,10 +191,11 @@ void main() async {
 
   // Custom Criteria
   test("Return 'false' on first try (custom:test)", () async {
-    await ShouldReviewExtension.reset();
+    await ShouldReviewExtension.reset(customCriteriaKeys: ["test"]);
     expect(
         await ShouldReview.shouldReview(
             criteria: Criteria.custom,
+            customCriteriaKey: "test",
             minCustomCriteriaValue: 5,
             coolDownCustomCriteriaInterval: 2),
         false);
@@ -240,6 +241,101 @@ void main() async {
         false);
     await ShouldReview.recordCustomCriteriaMet("test");
     expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 5);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        true);
+  });
+
+  test('Verify cooldown behaviour with custom criteria', () async {
+    await ShouldReviewExtension.reset(customCriteriaKeys: ["test"]);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 1);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 2);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 3);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 4);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 5);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        true);
+    // Cool Down Mode.
+    // Coool down launch times = 4
+
+    // So we can still return true for testing purposes.
+    ShouldReviewExtension.resetReturnedTrueTodayFlag();
+
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 6);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 7);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        true);
+
+    // So we can still return true for testing purposes.
+    await ShouldReviewExtension.resetReturnedTrueTodayFlag();
+
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 8);
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2,
+            customCriteriaKey: "test"),
+        false);
+    await ShouldReview.recordCustomCriteriaMet("test");
+    expect(await ShouldReview.getTimesCustomCriteriaWasMet("test"), 9);
     expect(
         await ShouldReview.shouldReview(
             criteria: Criteria.custom,
