@@ -59,126 +59,138 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        alignment: Alignment.center,
-        child: Form(
-          key: _daysCriteriaFormKey,
-          child: Column(
-            children: [
-              const Text(
-                  "Determine if user should rate app by past days after first launch"),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _minDaysController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            int.tryParse(value) == null) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          label: Text('Minimum Days before First Prompt'),
-                          border: OutlineInputBorder(borderSide: BorderSide())),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: Form(
+            key: _daysCriteriaFormKey,
+            child: Column(
+              children: [
+                const Text(
+                    "Determine if user should rate app by past days after first launch"),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _minDaysController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null) {
+                            return 'Please enter a number';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            label: Text('Minimum Days before First Prompt'),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide())),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _coolDownDaysController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            int.tryParse(value) == null) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          label: Text('Interval Days after First Prompt.'),
-                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _setHypotethicalTodaysDate,
-                color: Colors.blue,
-                child: const Text(
-                  "Set Hypotethical Today's Date",
-                  style: TextStyle(color: Colors.white),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _coolDownDaysController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null) {
+                            return 'Please enter a number';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            label: Text('Interval Days after First Prompt.'),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide())),
+                      ),
+                    )
+                  ],
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(DateTimeExtension.customTime == null
-                  ? "Same as System"
-                  : DateTimeExtension.customTime.toString()),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "Has Prompted user to Rate App: " +
-                    (_hasPromptedRateApp ? "True" : "False"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _testShouldRateByDaysCriteria,
-                color: Colors.blue,
-                child: const Text(
-                  "Test",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _reset,
-                color: Colors.blue,
-                child: const Text(
-                  "Reset",
-                  style: TextStyle(color: Colors.white),
+                MaterialButton(
+                  onPressed: _setHypotethicalTodaysDate,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Set Hypotethical Today's Date",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _viewLaunchTimesCriteriaExample,
-                color: Colors.blue,
-                child: const Text(
-                  "View Launch Times Criteria Example",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(
+                  height: 10,
                 ),
-              )
-            ],
+                Text(DateTimeExtension.customTime == null
+                    ? "Same as System"
+                    : DateTimeExtension.customTime.toString()),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "Has Prompted user to Rate App: " +
+                      (_hasPromptedRateApp ? "True" : "False"),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _testShouldRateByDaysCriteria,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Test",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _reset,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Reset",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _viewLaunchTimesCriteriaExample,
+                  color: Colors.blue,
+                  child: const Text(
+                    "View Launch Times Criteria Example",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: _viewCustomCriteriaExample,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Custom Criteria Example",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -243,6 +255,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _viewLaunchTimesCriteriaExample() {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const LaunchTimesCriteriaExample()));
+  }
+
+  void _viewCustomCriteriaExample() {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const CustomCriteriaExample()));
   }
 }
 
@@ -443,5 +460,19 @@ class _LaunchTimesCriteriaExampleState
       // ignore: avoid_print
       print("Returned False");
     }
+  }
+}
+
+class CustomCriteriaExample extends StatefulWidget {
+  const CustomCriteriaExample({Key? key}) : super(key: key);
+
+  @override
+  _CustomCriteriaExampleState createState() => _CustomCriteriaExampleState();
+}
+
+class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

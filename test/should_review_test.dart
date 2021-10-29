@@ -189,6 +189,17 @@ void main() async {
         false);
   });
 
+  // Custom Criteria
+  test("Return 'false' on first try (custom:test)", () async {
+    await ShouldReviewExtension.reset();
+    expect(
+        await ShouldReview.shouldReview(
+            criteria: Criteria.custom,
+            minCustomCriteriaValue: 5,
+            coolDownCustomCriteriaInterval: 2),
+        false);
+  });
+
   test("Test Custom Criteria", () async {
     await ShouldReviewExtension.reset(customCriteriaKeys: ["test"]);
     await ShouldReview.recordCustomCriteriaMet("test");
