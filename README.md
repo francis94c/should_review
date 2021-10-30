@@ -60,7 +60,8 @@ if (await ShouldReview.shouldReview(
     ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
 }
 ```
-__NB:__ For the above to work as expected, there is one thing you have to put in place, which is the `recordLaunch` function.
+
+**NB:** For the above to work as expected, there is one thing you have to put in place, which is the `recordLaunch` function.
 
 The `recordLaunch` function must be called somewhere in your app that runs once the app is launched. Suitably in your `lib\main.dart` file or in the `initState` of your Dashboard widget for instance.
 
@@ -83,17 +84,24 @@ if (await ShouldReview.shouldReview(
 }
 ```
 
-__NB:__ The `shouldReview` function can only return `true` __once__ a day.
+**NB:** The `shouldReview` function can only return `true` **once** a day.
 
 ### Parameters
 
-| Parameter             | Description                                                                                                                                                                                                                                                 | Example                                   |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------|
-| `criteria`            | The criteria to use for determining if you should prompt a user for review.                                                                                                                                                                                 | `Criteria.days`, `Criteria.timesLaunched` |
-| `minDays`             | The minimum number of days since first app launch to prompt a user for review.                                                                                                                                                                              | `5`, `8`, `2`                             |
-| `coolDownDays`        | The number of days after the minimum days has elapsed to prompt a user for review. In other words, if you provided `2` to this parameter, it means that every `2` days, the `shouldReview` function will return true if `neverReview` has not been called. | `2`, `3`, `1`                             |
-| `minLaunchTimes`      | The number of times the app has to be launched before the `shouldReview` function can return true.                                                                                                                                                          | `8`, `5`                                  |
-| `coolDownLaunchTimes` | same as `coolDownDays` but for the launch times criteria.                                                                                                                                                                                                   | `3`, `5`                                  |
+| Parameter                        | Description                                                                                                                                                                                                                                                | Example                                   | Default         |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | --------------- |
+| `criteria`                       | The criteria to use for determining if you should prompt a user for review.                                                                                                                                                                                | `Criteria.days`, `Criteria.timesLaunched` | `Criteria.days` |
+| `minDays`                        | The minimum number of days since first app launch to prompt a user for review.                                                                                                                                                                             | `5`, `8`, `2`                             | `5`             |
+| `coolDownDays`                   | The number of days after the minimum days has elapsed to prompt a user for review. In other words, if you provided `2` to this parameter, it means that every `2` days, the `shouldReview` function will return true if `neverReview` has not been called. | `2`, `3`, `1`                             | `2`             |
+| `minLaunchTimes`                 | The number of times the app has to be launched before the `shouldReview` function can return true.                                                                                                                                                         | `8`, `5`                                  | `5`             |
+| `coolDownLaunchTimes`            | Same as `coolDownDays` but for the launch times criteria.                                                                                                                                                                                                  | `3`, `5`                                  | `4`             |
+| `minCustomCriteriaValue`         | The minimum value for the given a given custom criterion.                                                                                                                                                                                                  | `3`, `10`                                 | `null`          |
+| `coolDownCustomCriteriaInterval` | Cool down interval value for custom criteria. Similar to `coolDownDays` and `coolDownLaunchTimes`.                                                                                                                                                         | `2`, `5`                                  | `null`          |
+| `customCriteriaKey`              | Custom Criteria Key                                                                                                                                                                                                                                        | `made_purchase`, `advanced_a_level`, etc. | `null`          |
+
+**NB:** `minCustomCriteriaValue` and `customCriteriaKey` are when criteria is set to `Criteria.custom`. Not providing the two values in this scenario will result in an error.
+
+**NB:** The `coolDown...` parameters are nullable. passing null to them will ignore all cool down logic and return false all through.
 
 ## Additional information
 
