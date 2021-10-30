@@ -59,126 +59,138 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        alignment: Alignment.center,
-        child: Form(
-          key: _daysCriteriaFormKey,
-          child: Column(
-            children: [
-              const Text(
-                  "Determine if user should rate app by past days after first launch"),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      controller: _minDaysController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            int.tryParse(value) == null) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          label: Text('Minimum Days before First Prompt'),
-                          border: OutlineInputBorder(borderSide: BorderSide())),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: Form(
+            key: _daysCriteriaFormKey,
+            child: Column(
+              children: [
+                const Text(
+                    "Determine if user should rate app by past days after first launch"),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _minDaysController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null) {
+                            return 'Please enter a number';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            label: Text('Minimum Days before First Prompt'),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide())),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _coolDownDaysController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
-                      ],
-                      validator: (value) {
-                        if (value == null ||
-                            value.isEmpty ||
-                            int.tryParse(value) == null) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      decoration: const InputDecoration(
-                          label: Text('Interval Days after First Prompt.'),
-                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _setHypotethicalTodaysDate,
-                color: Colors.blue,
-                child: const Text(
-                  "Set Hypotethical Today's Date",
-                  style: TextStyle(color: Colors.white),
+                    Expanded(
+                      child: TextFormField(
+                        controller: _coolDownDaysController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                        ],
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) == null) {
+                            return 'Please enter a number';
+                          }
+                          return null;
+                        },
+                        decoration: const InputDecoration(
+                            label: Text('Interval Days after First Prompt.'),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide())),
+                      ),
+                    )
+                  ],
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(DateTimeExtension.customTime == null
-                  ? "Same as System"
-                  : DateTimeExtension.customTime.toString()),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                "Has Prompted user to Rate App: " +
-                    (_hasPromptedRateApp ? "True" : "False"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _testShouldRateByDaysCriteria,
-                color: Colors.blue,
-                child: const Text(
-                  "Test",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _reset,
-                color: Colors.blue,
-                child: const Text(
-                  "Reset",
-                  style: TextStyle(color: Colors.white),
+                MaterialButton(
+                  onPressed: _setHypotethicalTodaysDate,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Set Hypotethical Today's Date",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              MaterialButton(
-                onPressed: _viewLaunchTimesCriteriaExample,
-                color: Colors.blue,
-                child: const Text(
-                  "View Launch Times Criteria Example",
-                  style: TextStyle(color: Colors.white),
+                const SizedBox(
+                  height: 10,
                 ),
-              )
-            ],
+                Text(DateTimeExtension.customTime == null
+                    ? "Same as System"
+                    : DateTimeExtension.customTime.toString()),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "Has Prompted user to Rate App: " +
+                      (_hasPromptedRateApp ? "True" : "False"),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _testShouldRateByDaysCriteria,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Test",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _reset,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Reset",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                MaterialButton(
+                  onPressed: _viewLaunchTimesCriteriaExample,
+                  color: Colors.blue,
+                  child: const Text(
+                    "View Launch Times Criteria Example",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                MaterialButton(
+                  onPressed: _viewCustomCriteriaExample,
+                  color: Colors.blue,
+                  child: const Text(
+                    "Custom Criteria Example",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -243,6 +255,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _viewLaunchTimesCriteriaExample() {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => const LaunchTimesCriteriaExample()));
+  }
+
+  void _viewCustomCriteriaExample() {
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const CustomCriteriaExample()));
   }
 }
 
@@ -427,6 +444,238 @@ class _LaunchTimesCriteriaExampleState
         criteria: Criteria.timesLaunched,
         minLaunchTimes: int.parse(_minLaunchTimesController.text),
         coolDownLaunchTimes: int.parse(_coolDownLaunchTimesController.text))) {
+      // A good place to use the in_app_review plugin.
+      // ignore: avoid_print
+      print("Retruned True");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "User has been shown a hypotetical review dialog, this logic will now return true only on the cool down launch times interval."),
+          duration: Duration(seconds: 10),
+        ),
+      );
+      // Call `ShouldReview.neverReview();` to ensure the shouldReview function never returns true again.
+      setState(() => _hasPromptedRateApp = true);
+    } else {
+      // ignore: avoid_print
+      print("Returned False");
+    }
+  }
+}
+
+class CustomCriteriaExample extends StatefulWidget {
+  const CustomCriteriaExample({Key? key}) : super(key: key);
+
+  @override
+  _CustomCriteriaExampleState createState() => _CustomCriteriaExampleState();
+}
+
+class _CustomCriteriaExampleState extends State<CustomCriteriaExample> {
+  GlobalKey<FormState> _customCriteriaFormKey = GlobalKey();
+
+  final TextEditingController _minCustomCriteriaValueController =
+      TextEditingController();
+  final TextEditingController _coolDownCustomCriteriaIntervalValueController =
+      TextEditingController();
+  final TextEditingController _customCriteriaKeyController =
+      TextEditingController();
+
+  bool _hasPromptedRateApp = false;
+  int _timesCutsomCriteriaWasMet = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _reset().then((_) => _updateTimesCustomCriteriaWasMetInUI());
+    _customCriteriaKeyController.text = 'made_purchase';
+    _minCustomCriteriaValueController.text = '4';
+    _coolDownCustomCriteriaIntervalValueController.text = '2';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Custom Criteria Example"),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        child: Form(
+          key: _customCriteriaFormKey,
+          child: Column(
+            children: [
+              const Text(
+                  "Determine if user should rate app by a custom criterion"),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _minCustomCriteriaValueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text('Minimum custom criteria value'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      controller:
+                          _coolDownCustomCriteriaIntervalValueController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                      ],
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                          label: Text('Custom criteria interval value'),
+                          border: OutlineInputBorder(borderSide: BorderSide())),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                controller: _customCriteriaKeyController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a valid key';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                    label: Text('Custom criteria key'),
+                    border: OutlineInputBorder(borderSide: BorderSide())),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Has Prompted user to Rate App: " +
+                    (_hasPromptedRateApp ? "True" : "False"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Times custom criteria was met: $_timesCutsomCriteriaWasMet",
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _recordCustomCriteriaFailed,
+                color: Colors.blue,
+                child: const Text(
+                  "Record Custom Criteria Met",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: _testShouldRateByLaunchTimesCriteria,
+                color: Colors.blue,
+                child: const Text(
+                  "Test",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              MaterialButton(
+                onPressed: () => _reset()
+                    .then((_) => _updateTimesCustomCriteriaWasMetInUI()),
+                color: Colors.blue,
+                child: const Text(
+                  "Reset",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Record Custom Criteria Met.
+  void _recordCustomCriteriaFailed() async {
+    // Validate Form Field.
+    if (!_customCriteriaFormKey.currentState!.validate()) {
+      return;
+    }
+
+    await ShouldReview.recordCustomCriteriaMet(
+        _customCriteriaKeyController.text);
+    _updateTimesCustomCriteriaWasMetInUI();
+  }
+
+  /// Upate times custom criteria was met in UI.
+  void _updateTimesCustomCriteriaWasMetInUI() {
+    ShouldReview.getTimesCustomCriteriaWasMet(_customCriteriaKeyController.text)
+        .then(
+            (int times) => setState(() => _timesCutsomCriteriaWasMet = times));
+  }
+
+  /// Reset flags.
+  Future<void> _reset() async {
+    await ShouldReviewExtension.reset(
+        customCriteriaKeys: [_customCriteriaKeyController.text]);
+    setState(() {
+      _hasPromptedRateApp = false;
+    });
+  }
+
+  void _testShouldRateByLaunchTimesCriteria() async {
+    // Validate Form Field.
+    if (!_customCriteriaFormKey.currentState!.validate()) {
+      return;
+    }
+
+    // ignore: avoid_print
+    print("Checking Prompt Review Possibility");
+
+    // Should Review.
+    if (await ShouldReview.shouldReview(
+        criteria: Criteria.custom,
+        customCriteriaKey: _customCriteriaKeyController.text,
+        minCustomCriteriaValue:
+            int.parse(_minCustomCriteriaValueController.text),
+        coolDownCustomCriteriaInterval:
+            int.parse(_coolDownCustomCriteriaIntervalValueController.text))) {
       // A good place to use the in_app_review plugin.
       // ignore: avoid_print
       print("Retruned True");
