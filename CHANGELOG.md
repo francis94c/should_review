@@ -14,3 +14,7 @@
 * Use custom criteria. Use string keys to indicate custom criteria, e.g. `made_purchase`.
 * Make cool down intervals nullable.
 * More tests.
+
+### 0.2.1
+
+* Update README.
