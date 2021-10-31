@@ -15,6 +15,10 @@
 * Make cool down intervals nullable.
 * More tests.
 
-### 0.2.1
+## 0.2.1
 
 * Update README.
+
+## 0.2.2
+
+* Fix changelog formatting.
