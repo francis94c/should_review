@@ -86,6 +86,31 @@ if (await ShouldReview.shouldReview(
 
 **NB:** The `shouldReview` function can only return `true` **once** a day.
 
+### Using Days Criteria
+
+If you want to use some other kind of criteria like when a use performs action a given number of times, you can use the `Criteria.times` criteria and provide a key (e.g. `made_purchase`) for the action. For this to work as intended, you need to call the `recordCustomCriteriaMet` function with the same custom key (e.g. `made_purchase`) every time that action or criteria is met. See an example below.
+
+```dart
+import 'package:should_review/should_review.dart';
+
+// Every time a purchase is made, the blow is called.
+recordCustomCriteriaMet("made_purchase");
+
+if (await ShouldReview.shouldReview(
+    criteria: Criteria.custom,
+    customCriteriaKey: "made_purchase",
+    minCustomCriteriaValue: 5,
+    coolDownCustomCriteriaInterval: 2,
+    )) {
+    // Prompt user for review.
+    ShouldReview.neverReview(); // This ensures the shouldReview function never returns true again.
+}
+```
+
+**NB:** `minCustomCriteriaValue` and `customCriteriaKey` is **required** when criteria is set to `Criteria.custom`. Not providing the two values in this scenario will result in an error.
+
+**NB:** The `coolDown...` parameters are nullable. passing null to them will ignore all cool down logic and return false all through.
+
 ### Parameters
 
 | Parameter                        | Description                                                                                                                                                                                                                                                | Example                                   | Default         |
@@ -98,10 +123,6 @@ if (await ShouldReview.shouldReview(
 | `minCustomCriteriaValue`         | The minimum value for the given a given custom criterion.                                                                                                                                                                                                  | `3`, `10`                                 | `null`          |
 | `coolDownCustomCriteriaInterval` | Cool down interval value for custom criteria. Similar to `coolDownDays` and `coolDownLaunchTimes`.                                                                                                                                                         | `2`, `5`                                  | `null`          |
 | `customCriteriaKey`              | Custom Criteria Key                                                                                                                                                                                                                                        | `made_purchase`, `advanced_a_level`, etc. | `null`          |
-
-**NB:** `minCustomCriteriaValue` and `customCriteriaKey` are when criteria is set to `Criteria.custom`. Not providing the two values in this scenario will result in an error.
-
-**NB:** The `coolDown...` parameters are nullable. passing null to them will ignore all cool down logic and return false all through.
 
 ## Additional information
 
