@@ -86,9 +86,9 @@ if (await ShouldReview.shouldReview(
 
 **NB:** The `shouldReview` function can only return `true` **once** a day.
 
-### Using Days Criteria
+### Using Custom Criteria
 
-If you want to use some other kind of criteria like when a use performs action a given number of times, you can use the `Criteria.times` criteria and provide a key (e.g. `made_purchase`) for the action. For this to work as intended, you need to call the `recordCustomCriteriaMet` function with the same custom key (e.g. `made_purchase`) every time that action or criteria is met. See an example below.
+If you want to use some other kinds of criteria like when a user performs an action a given number of times, you can use the `Criteria.custom` criteria and provide a key (e.g. `made_purchase`) for the action. For this to work as intended, you need to call the `recordCustomCriteriaMet` function with the same custom key (e.g. `made_purchase`) every time that action or criteria is met. See an example below.
 
 ```dart
 import 'package:should_review/should_review.dart';

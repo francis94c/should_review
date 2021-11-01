@@ -22,3 +22,7 @@
 ## 0.2.2
 
 * Fix changelog formatting.
+
+## 0.2.3
+
+* Update README.
