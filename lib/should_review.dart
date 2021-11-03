@@ -13,9 +13,9 @@ class ShouldReview {
   static Future<bool> shouldReview(
       {Criteria criteria = Criteria.days,
       int minDays = 5,
-      int coolDownDays = 2,
+      int? coolDownDays = 2,
       int minLaunchTimes = 5,
-      int coolDownLaunchTimes = 4,
+      int? coolDownLaunchTimes = 4,
       String? customCriteriaKey,
       int? minCustomCriteriaValue,
       int? coolDownCustomCriteriaInterval}) async {
@@ -43,6 +43,7 @@ class ShouldReview {
         }
 
         if (prefs.getBool(prefInDaysCoolDownMode) ?? false) {
+          if (coolDownDays == null) return false;
           firstLaunchDate = firstLaunchDate.add(Duration(days: minDays));
           if (now.difference(firstLaunchDate).inDays % coolDownDays != 0) {
             return false;
@@ -60,6 +61,7 @@ class ShouldReview {
         // Times Launched Criteria.
         int timesLaunched = prefs.getInt(prefTimesLaunched) ?? 1;
         if (prefs.getBool(prefInTimesLaunchedCoolDownMode) ?? false) {
+          if (coolDownLaunchTimes == null) return false;
           timesLaunched -= minLaunchTimes;
           if (timesLaunched <= 0) return false;
           if (timesLaunched % coolDownLaunchTimes != 0) {
@@ -76,9 +78,7 @@ class ShouldReview {
         break;
       case Criteria.custom:
         // Custom criteria.
-        if (customCriteriaKey == null ||
-            minCustomCriteriaValue == null ||
-            coolDownCustomCriteriaInterval == null) {
+        if (customCriteriaKey == null || minCustomCriteriaValue == null) {
           throw ArgumentError(
               'Custom Criteria requires customCriteriaKey, minCustomCriteriaValue and coolDownCustomCriteriaInterval to be set.');
         }
@@ -87,6 +87,7 @@ class ShouldReview {
             prefs.getInt(prefCustomCriteriaPrefix + customCriteriaKey) ?? 0;
         if (prefs.getBool(prefInCustomCoolDownModePrefix + customCriteriaKey) ??
             false) {
+          if (coolDownCustomCriteriaInterval == null) return false;
           customCriteriaValue -= minCustomCriteriaValue;
           if (customCriteriaValue <= 0) return false;
           if (customCriteriaValue % coolDownCustomCriteriaInterval != 0) {
@@ -118,14 +119,30 @@ class ShouldReview {
     _syncFirstLaunchDate(prefs);
   }
 
+  /// Increments the number of times a custom criteria was met.
+  static Future<void> recordCustomCriteriaMet(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(prefCustomCriteriaPrefix + key,
+        (prefs.getInt(prefCustomCriteriaPrefix + key) ?? 0) + 1);
+    _syncFirstLaunchDate(prefs);
+  }
+
   /// Get number of times app was launched i.e recordLaunch() was called.
   static Future<int> getTimesAppLaunched() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getInt(prefTimesLaunched) ?? 0;
   }
 
+  /// Get number of times custom criteria was met i.e .how manu times
+  /// recordCustomCriteriaMet() was called for a custom criteria.
+  static Future<int> getTimesCustomCriteriaWasMet(String key) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(prefCustomCriteriaPrefix + key) ?? 0;
+  }
+
   /// Enter cooldown mode.
-  /// At this point, minDays or minLaunchTimes do not effectively count, but coolDownInterval values.
+  /// At this point, minDays or minLaunchTimes do not effectively count, but
+  /// coolDownInterval values.
   static Future<void> _enterCoolDownMode(
       SharedPreferences prefs, Criteria criteria,
       {String? key}) async {
