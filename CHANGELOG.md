@@ -26,3 +26,7 @@
 ## 0.2.3
 
 * Update README.
+
+## 0.2.5
+
+* Update README.
