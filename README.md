@@ -71,6 +71,8 @@ To determine whether to prompt a user for review based on launch times criteria 
 ```dart
 import 'package:should_review/should_review.dart';
 
+ShouldReview.recordLaunch(); // This records the launch of the app. Preferable called in `main()` of your app.
+
 if (await ShouldReview.shouldReview(
     criteria: Criteria.launchTimes,
     minLaunchTimes: 8,
