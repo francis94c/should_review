@@ -19,7 +19,7 @@ Add the below to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
-  should_review: ^0.2.3
+  should_review: ^0.2.4
 ```
 
 As this package doesn't actually prompt users for a review, you will need a plugin or a native implementation or other means to do that for you.
@@ -28,10 +28,11 @@ A good candidate is the [`in_app_review`](https://pub.dev/packages/in_app_review
 
 ## Usage
 
-There are currently two ways or criteria with which you can use this package.
+There are currently three ways or criteria with which you can use this package.
 
 1. Using Days (`Criteria.days`) criteria (Using number of days since first app launch and subsequent set days interval after that has elapsed).
 2. Using Times Launched (`Criteria.timesLaunched`) criteria (Using number of times app has been launched).
+3. Using a custom criteria. e.g. `made_purchase`.
 
 ### Using Days Criteria
 
@@ -61,11 +62,7 @@ if (await ShouldReview.shouldReview(
 }
 ```
 
-**NB:** For the above to work as expected, there is one thing you have to put in place, which is the `recordLaunch` function.
-
-The `recordLaunch` function must be called somewhere in your app that runs once the app is launched. Suitably in your `lib\main.dart` file or in the `initState` of your Dashboard widget for instance.
-
-This enables the package record how many times the app was launched and use it while determining review possibility with the times launched criteria.
+**NB:** The `shouldReview` function can only return `true` **once** a day for all criteria.
 
 ### Using Launch Times Criteria
 
@@ -84,7 +81,11 @@ if (await ShouldReview.shouldReview(
 }
 ```
 
-**NB:** The `shouldReview` function can only return `true` **once** a day.
+**NB:** For the above to work as expected, there is one thing you have to put in place, which is the `recordLaunch` function.
+
+The `recordLaunch` function must be called somewhere in your app that runs once the app is launched. Suitably in your `lib\main.dart` file or in the `initState` of your Dashboard widget for instance.
+
+This enables the package record how many times the app was launched and use it while determining review possibility with the times launched criteria.
 
 ### Using Custom Criteria
 
@@ -93,8 +94,8 @@ If you want to use some other kinds of criteria like when a user performs an act
 ```dart
 import 'package:should_review/should_review.dart';
 
-// Every time a purchase is made, the blow is called.
-recordCustomCriteriaMet("made_purchase");
+// Every time a purchase is made, the below is called.
+ShouldReview.recordCustomCriteriaMet("made_purchase");
 
 if (await ShouldReview.shouldReview(
     criteria: Criteria.custom,
