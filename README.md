@@ -19,7 +19,7 @@ Add the below to your `pubspec.yaml` file.
 
 ```yaml
 dependencies:
-  should_review: ^0.2.4
+  should_review: ^0.2.5
 ```
 
 As this package doesn't actually prompt users for a review, you will need a plugin or a native implementation or other means to do that for you.
