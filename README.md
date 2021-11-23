@@ -22,6 +22,12 @@ dependencies:
   should_review: ^0.2.5
 ```
 
+and import with
+
+```dart
+import 'package:should_review/should_review.dart';
+```
+
 As this package doesn't actually prompt users for a review, you will need a plugin or a native implementation or other means to do that for you.
 
 A good candidate is the [`in_app_review`](https://pub.dev/packages/in_app_review) plugin.
